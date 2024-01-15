@@ -1,0 +1,92 @@
+
+// Program: AO Core
+// Developer: Forex Robot Easy Team
+// Developer's Site: forexroboteasy.com
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+#include <Math\Random.mqh>
+
+// Define constants
+#define INITIAL_BALANCE 10000.0
+#define PROFIT_TARGET 0.02
+#define RISK_THRESHOLD 0.01
+
+// Initialize trade object
+CTrade trade;
+
+// Define optimization function for profit/risk ratio
+double OptimizeProfitRiskRatio(double profit, double risk)
+{
+    return profit / risk;
+}
+
+// Define portfolio optimization function
+void OptimizePortfolio(double risk, double return, double correlation)
+{
+    // Perform portfolio optimization calculations
+    // ...
+    
+    // Display optimized portfolio results
+    // ...
+}
+
+// Define main function
+void OnTick()
+{
+    // Get market data
+    double currentPrice = MarketInfo(Symbol(), MODE_BID);
+    
+    // Make trading decisions based on market conditions
+    if (currentPrice > 0)
+    {
+        // Execute buy trade
+        trade.Buy(Symbol(), 1, currentPrice, 0, NULL);
+    }
+    else if (currentPrice < 0)
+    {
+        // Execute sell trade
+        trade.Sell(Symbol(), 1, currentPrice, 0, NULL);
+    }
+    
+    // Check if target profit is reached
+    double accountBalance = AccountBalance();
+    if (accountBalance >= INITIAL_BALANCE * (1 + PROFIT_TARGET))
+    {
+        // Close all trades and end program
+        trade.CloseAll();
+        return;
+    }
+    
+    // Check if risk threshold is exceeded
+    double currentRisk = MathRandomDouble();
+    if (currentRisk >= RISK_THRESHOLD)
+    {
+        // Close all trades and end program
+        trade.CloseAll();
+        return;
+    }
+    
+    // Call optimization functions
+    double optimizedProfitRiskRatio = OptimizeProfitRiskRatio(0.5, 0.3);
+    OptimizePortfolio(0.1, 0.15, 0.8);
+}
+
+// Define program entry point
+int OnInit()
+{
+    // Set initial account balance
+    AccountInfoDouble(ACCOUNT_BALANCE) = INITIAL_BALANCE;
+    
+    // Initialize trade object
+    trade.SetDeviationInPoints(30);
+    
+    return INIT_SUCCEEDED;
+}
+
+// Define program exit point
+void OnDeinit(const int reason)
+{
+    // Close all trades before program exit
+    trade.CloseAll();
+}
